@@ -1,0 +1,8 @@
+flask
+torch
+torchvision
+timm
+Pillow
+huggingface_hub
+numpy
+gunicorn

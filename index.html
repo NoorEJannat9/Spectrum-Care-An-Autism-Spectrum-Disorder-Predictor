@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Spectrum Care</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/feather-icons"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: { primary: '#4F46E5', secondary: '#10B981' }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    df-messenger {
+      --df-messenger-button-titlebar-color: #4F46E5;
+      --df-messenger-button-titlebar-background-color: #4F46E5;
+      --df-messenger-chat-background-color: #f3f4f6;
+      --df-messenger-font-color: #1f2937;
+      --df-messenger-user-message: #10B981;
+      --df-messenger-bot-message: #ffffff;
+      --df-messenger-primary-color: #4F46E5;
+    }
+  </style>
+</head>
+<body class="bg-gray-50 min-h-screen flex flex-col">
+
+  <custom-navbar>
+<nav id="mainNavbar" class="bg-primary w-full z-20 top-0 start-0 border-b border-gray-300 transition-transform duration-300 fixed">
+    <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
+      <a href="#" class="flex items-center space-x-3 rtl:space-x-reverse">
+        <img src="logo.png" class="h-7" alt="Logo" />
+        <span class="self-center text-xl text-white font-semibold whitespace-nowrap">Spectrum Care</span>
+      </a>
+      <button data-collapse-toggle="navbar-multi-level-dropdown" type="button" class="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-white rounded-base md:hidden hover:bg-primary/80 focus:outline-none focus:ring-2 focus:ring-gray-300" aria-controls="navbar-multi-level-dropdown" aria-expanded="false">
+        <span class="sr-only">Open main menu</span>
+        <svg class="w-6 h-6" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M5 7h14M5 12h14M5 17h14"/></svg>
+      </button>
+      <div class="hidden w-full md:block md:w-auto" id="navbar-multi-level-dropdown">
+        <ul class="flex flex-col font-medium p-4 md:p-0 mt-4 border border-gray-300 rounded-base bg-primary md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0">
+          <li><a href="#" class="block py-2 px-3 text-white bg-primary/80 rounded md:bg-transparent md:text-white md:p-0" aria-current="page">Home</a></li>
+          <li><a href="#facial" class="block py-2 px-3 text-white rounded hover:bg-primary/80 md:hover:bg-transparent md:hover:text-gray-200 md:p-0">Facial Analysis</a></li>
+          <li><a href="#questionnaire" class="block py-2 px-3 text-white rounded hover:bg-primary/80 md:hover:bg-transparent md:hover:text-gray-200 md:p-0">Behavioral Assessment</a></li>
+          <li><a href="#gaze" class="block py-2 px-3 text-white rounded hover:bg-primary/80 md:hover:bg-transparent md:hover:text-gray-200 md:p-0">Eye Gaze Tracking</a></li>
+          <li><a href="#about" class="block py-2 px-3 text-white rounded hover:bg-primary/80 md:hover:bg-transparent md:hover:text-gray-200 md:p-0">About ASD</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  </custom-navbar>
+
+  <!-- Scroll hide/show navbar -->
+  <script>
+    let lastScrollTop = 0;
+    const navbar = document.getElementById('mainNavbar');
+
+    window.addEventListener('scroll', () => {
+      let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+      if (scrollTop > lastScrollTop) {
+        navbar.style.transform = 'translateY(-100%)';
+      } else {
+        navbar.style.transform = 'translateY(0)';
+      }
+
+      lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+    });
+  </script>
+
+<!-- Hero banner: taller section with autism-themed background -->
+  <section class="w-full"> <!-- Added pt-20 to account for fixed navbar -->
+    <div class="relative bg-cover bg-center h-96 md:h-screen" style="background-image: url('banner.jpg');">
+      <div class="absolute inset-0 bg-black/50" aria-hidden="true"></div>
+      <div class="relative z-10 max-w-screen-xl mx-auto pl-48 pt-64 md:pl-[35rem] md:pt-96 text-center text-white">
+        <h2 class="text-4xl md:text-6xl font-bold drop-shadow-lg">Spectrum Care</h2>
+        <p class="mt-6 text-lg md:text-2xl text-white/90 max-w-3xl mx-auto">A preliminary screening aid using facial analysis, behavioral questionnaire, and eye gaze tracking.<br><strong>Note: This is not a medical diagnosis. Always consult a professional.</strong></p>
+      </div>
+    </div>
+  </section>
+
+
+  <main class="flex-grow container mx-auto px-4 py-8 pt-20">
+    <div class="max-w-4xl mx-auto bg-white rounded-xl shadow-md overflow-hidden p-6">
+      <h1 class="text-3xl font-bold text-primary mb-6">Autism Spectrum Prediction</h1>
+
+      <div class="grid md:grid-cols-2 gap-8">
+        <!-- Image Upload Section -->
+        <section class="border-r border-gray-200 pr-6">
+          <h2 class="text-xl font-semibold text-gray-800 mb-4 flex items-center">
+            <i data-feather="image" class="mr-2"></i> Facial Feature Analysis
+          </h2>
+          <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
+            <div id="imagePreview" class="hidden mb-4">
+              <img id="preview" class="max-h-64 mx-auto rounded-lg" src="" alt="Preview">
+            </div>
+            <input type="file" id="imageUpload" accept="image/*" class="hidden">
+            <button id="uploadBtn" class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary/90 transition flex items-center mx-auto">
+              <i data-feather="upload" class="inline mr-2"></i> Upload Image
+            </button>
+            <p class="text-sm text-gray-500 mt-2">Our AI analyzes facial features for ASD markers</p>
+          </div>
+          <div id="imageResult" class="mt-4 hidden">
+            <div class="p-4 bg-primary/10 rounded-lg border border-primary/20">
+              <h3 class="font-medium text-primary">Analysis Result</h3>
+              <p id="imagePrediction" class="mt-2"></p>
+              <div class="w-full bg-gray-200 rounded-full h-2.5 mt-2">
+                <div id="imageConfidenceBar" class="bg-primary h-2.5 rounded-full" style="width:0;"></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Questionnaire Section -->
+        <section>
+          <h2 class="text-xl font-semibold text-gray-800 mb-4 flex items-center">
+            <i data-feather="edit-3" class="mr-2"></i> Behavioral Assessment
+          </h2>
+
+          <form id="questionnaire" class="space-y-4">
+            <div class="space-y-4 max-h-96 overflow-y-auto pr-2" id="questionsContainer">
+              <div class="space-y-3">
+                <div class="text-sm font-medium">1. Does your child face difficulties in focusing or maintaining attention on tasks for extended periods?</div>
+                <div class="flex flex-wrap gap-4">
+                  <label class="inline-flex items-center"><input type="radio" name="q1" value="never" required class="mr-2">Never</label>
+                  <label class="inline-flex items-center"><input type="radio" name="q1" value="rarely" class="mr-2">Rarely</label>
+                  <label class="inline-flex items-center"><input type="radio" name="q1" value="sometimes" class="mr-2">Sometimes</label>
+                  <label class="inline-flex items-center"><input type="radio" name="q1" value="often" class="mr-2">Often</label>
+                  <label class="inline-flex items-center"><input type="radio" name="q1" value="always" class="mr-2">Always</label>
+                </div>
+              </div>
+
+              <div class="space-y-3">
+                <div class="text-sm font-medium">2. Does your child tend to fixate on specific details or interests, making it hard to focus on broader concepts?</div>
+                <div class="flex flex-wrap gap-4">
+                  <label class="inline-flex items-center"><input type="radio" name="q2" value="never" required class="mr-2">Never</label>
+                  <label class="inline-flex items-center"><input type="radio" name="q2" value="rarely" class="mr-2">Rarely</label>
+                  <label class="inline-flex items-center"><input type="radio" name="q2" value="sometimes" class="mr-2">Sometimes</label>
+                  <label class="inline-flex items-center"><input type="radio" name="q2" value="often" class="mr-2">Often</label>
+                  <label class="inline-flex items-center"><input type="radio" name="q2" value="always" class="mr-2">Always</label>
+                </div>
+              </div>
+
+              <div class="space-y-3">
+                <div class="text-sm font-medium">3. Does your child get easily overwhelmed by distractions, making it difficult to concentrate or focus?</div>
+                <div class="flex flex-wrap gap-4">
+                  <label class="inline-flex items-center"><input type="radio" name="q3" value="never" required class="mr-2">Never</label>
+                  <label class="inline-flex items-center"><input type="radio" name="q3" value="rarely" class="mr-2">Rarely</label>
+                  <label class="inline-flex items-center"><input type="radio" name="q3" value="sometimes" class="mr-2">Sometimes</label>
+                  <label class="inline-flex items-center"><input type="radio" name="q3" value="often" class="mr-2">Often</label>
+                  <label class="inline-flex items-center"><input type="radio" name="q3" value="always" class="mr-2">Always</label>
+                </div>
+              </div>
+
+              <div class="space-y-3">
+                <div class="text-sm font-medium">4. Does your child struggle with multi-tasking or managing multiple instructions at once?</div>
+                <div class="flex flex-wrap gap-4">
+                  <label class="inline-flex items-center"><input type="radio" name="q4" value="never" required class="mr-2">Never</label>
+                  <label class="inline-flex items-center"><input type="radio" name="q4" value="rarely" class="mr-2">Rarely</label>
+                  <label class="inline-flex items-center"><input type="radio" name="q4" value="sometimes" class="mr-2">Sometimes</label>
+                  <label class="inline-flex items-center"><input type="radio" name="q4" value="often" class="mr-2">Often</label>
+                  <label class="inline-flex items-center"><input type="radio" name="q4" value="always" class="mr-2">Always</label>
+                </div>
+              </div>
+
+              <div class="space-y-3">
+                <div class="text-sm font-medium">5. Does your child often get distracted during tasks, making it challenging for them to concentrate on activities?</div>
+                <div class="flex flex-wrap gap-4">
+                  <label class="inline-flex items-center"><input type="radio" name="q5" value="never" required class="mr-2">Never</label>
+                  <label class="inline-flex items-center"><input type="radio" name="q5" value="rarely" class="mr-2">Rarely</label>
+                  <label class="inline-flex items-center"><input type="radio" name="q5" value="sometimes" class="mr-2">Sometimes</label>
+                  <label class="inline-flex items-center"><input type="radio" name="q5" value="often" class="mr-2">Often</label>
+                  <label class="inline-flex items-center"><input type="radio" name="q5" value="always" class="mr-2">Always</label>
+                </div>
+              </div>
+
+              <div class="space-y-3">
+                <div class="text-sm font-medium">6. Does your child have trouble making eye contact during conversations or interactions with others?</div>
+                <div class="flex flex-wrap gap-4">
+                  <label class="inline-flex items-center"><input type="radio" name="q6" value="never" required class="mr-2">Never</label>
+                  <label class="inline-flex items-center"><input type="radio" name="q6" value="rarely" class="mr-2">Rarely</label>
+                  <label class="inline-flex items-center"><input type="radio" name="q6" value="sometimes" class="mr-2">Sometimes</label>
+                  <label class="inline-flex items-center"><input type="radio" name="q6" value="often" class="mr-2">Often</label>
+                  <label class="inline-flex items-center"><input type="radio" name="q6" value="always" class="mr-2">Always</label>
+                </div>
+              </div>
+
+              <div class="space-y-3">
+                <div class="text-sm font-medium">7. Does your child prefer to play alone rather than engaging with other children?</div>
+                <div class="flex flex-wrap gap-4">
+                  <label class="inline-flex items-center"><input type="radio" name="q7" value="never" required class="mr-2">Never</label>
+                  <label class="inline-flex items-center"><input type="radio" name="q7" value="rarely" class="mr-2">Rarely</label>
+                  <label class="inline-flex items-center"><input type="radio" name="q7" value="sometimes" class="mr-2">Sometimes</label>
+                  <label class="inline-flex items-center"><input type="radio" name="q7" value="often" class="mr-2">Often</label>
+                  <label class="inline-flex items-center"><input type="radio" name="q7" value="always" class="mr-2">Always</label>
+                </div>
+              </div>
+
+              <div class="space-y-3">
+                <div class="text-sm font-medium">8. Does your child engage in repetitive behaviors, such as hand-flapping or rocking?</div>
+                <div class="flex flex-wrap gap-4">
+                  <label class="inline-flex items-center"><input type="radio" name="q8" value="never" required class="mr-2">Never</label>
+                  <label class="inline-flex items-center"><input type="radio" name="q8" value="rarely" class="mr-2">Rarely</label>
+                  <label class="inline-flex items-center"><input type="radio" name="q8" value="sometimes" class="mr-2">Sometimes</label>
+                  <label class="inline-flex items-center"><input type="radio" name="q8" value="often" class="mr-2">Often</label>
+                  <label class="inline-flex items-center"><input type="radio" name="q8" value="always" class="mr-2">Always</label>
+                </div>
+              </div>
+
+              <div class="space-y-3">
+                <div class="text-sm font-medium">9. Does your child have difficulty understanding or using non-verbal communication, such as facial expressions or gestures?</div>
+                <div class="flex flex-wrap gap-4">
+                  <label class="inline-flex items-center"><input type="radio" name="q9" value="never" required class="mr-2">Never</label>
+                  <label class="inline-flex items-center"><input type="radio" name="q9" value="rarely" class="mr-2">Rarely</label>
+                  <label class="inline-flex items-center"><input type="radio" name="q9" value="sometimes" class="mr-2">Sometimes</label>
+                  <label class="inline-flex items-center"><input type="radio" name="q9" value="often" class="mr-2">Often</label>
+                  <label class="inline-flex items-center"><input type="radio" name="q9" value="always" class="mr-2">Always</label>
+                </div>
+              </div>
+
+              <div class="space-y-3">
+                <div class="text-sm font-medium">10. Does your child seem to have a limited range of interests or play activities, preferring certain objects or routines?</div>
+                <div class="flex flex-wrap gap-4">
+                  <label class="inline-flex items-center"><input type="radio" name="q10" value="never" required class="mr-2">Never</label>
+                  <label class="inline-flex items-center"><input type="radio" name="q10" value="rarely" class="mr-2">Rarely</label>
+                  <label class="inline-flex items-center"><input type="radio" name="q10" value="sometimes" class="mr-2">Sometimes</label>
+                  <label class="inline-flex items-center"><input type="radio" name="q10" value="often" class="mr-2">Often</label>
+                  <label class="inline-flex items-center"><input type="radio" name="q10" value="always" class="mr-2">Always</label>
+                </div>
+              </div>
+
+              <div class="space-y-3">
+                <div class="text-sm font-medium">11. Does your child become upset by small changes in their routine or environment?</div>
+                <div class="flex flex-wrap gap-4">
+                  <label class="inline-flex items-center"><input type="radio" name="q11" value="never" required class="mr-2">Never</label>
+                  <label class="inline-flex items-center"><input type="radio" name="q11" value="rarely" class="mr-2">Rarely</label>
+                  <label class="inline-flex items-center"><input type="radio" name="q11" value="sometimes" class="mr-2">Sometimes</label>
+                  <label class="inline-flex items-center"><input type="radio" name="q11" value="often" class="mr-2">Often</label>
+                  <label class="inline-flex items-center"><input type="radio" name="q11" value="always" class="mr-2">Always</label>
+                </div>
+              </div>
+
+              <div class="space-y-3">
+                <div class="text-sm font-medium">12. Does your child struggle with pretend play or imaginative activities?</div>
+                <div class="flex flex-wrap gap-4">
+                  <label class="inline-flex items-center"><input type="radio" name="q12" value="never" required class="mr-2">Never</label>
+                  <label class="inline-flex items-center"><input type="radio" name="q12" value="rarely" class="mr-2">Rarely</label>
+                  <label class="inline-flex items-center"><input type="radio" name="q12" value="sometimes" class="mr-2">Sometimes</label>
+                  <label class="inline-flex items-center"><input type="radio" name="q12" value="often" class="mr-2">Often</label>
+                  <label class="inline-flex items-center"><input type="radio" name="q12" value="always" class="mr-2">Always</label>
+                </div>
+              </div>
+
+              <div class="space-y-3">
+                <div class="text-sm font-medium">13. Does your child have strong preferences for specific textures, smells, or sounds, reacting unusually to them?</div>
+                <div class="flex flex-wrap gap-4">
+                  <label class="inline-flex items-center"><input type="radio" name="q13" value="never" required class="mr-2">Never</label>
+                  <label class="inline-flex items-center"><input type="radio" name="q13" value="rarely" class="mr-2">Rarely</label>
+                  <label class="inline-flex items-center"><input type="radio" name="q13" value="sometimes" class="mr-2">Sometimes</label>
+                  <label class="inline-flex items-center"><input type="radio" name="q13" value="often" class="mr-2">Often</label>
+                  <label class="inline-flex items-center"><input type="radio" name="q13" value="always" class="mr-2">Always</label>
+                </div>
+              </div>
+
+              <div class="space-y-3">
+                <div class="text-sm font-medium">14. Does your child struggle to understand or express their emotions appropriately?</div>
+                <div class="flex flex-wrap gap-4">
+                  <label class="inline-flex items-center"><input type="radio" name="q14" value="never" required class="mr-2">Never</label>
+                  <label class="inline-flex items-center"><input type="radio" name="q14" value="rarely" class="mr-2">Rarely</label>
+                  <label class="inline-flex items-center"><input type="radio" name="q14" value="sometimes" class="mr-2">Sometimes</label>
+                  <label class="inline-flex items-center"><input type="radio" name="q14" value="often" class="mr-2">Often</label>
+                  <label class="inline-flex items-center"><input type="radio" name="q14" value="always" class="mr-2">Always</label>
+                </div>
+              </div>
+
+              <div class="space-y-3">
+                <div class="text-sm font-medium">15. Does your child frequently engage in behaviors or activities that are hard to interrupt or redirect?</div>
+                <div class="flex flex-wrap gap-4">
+                  <label class="inline-flex items-center"><input type="radio" name="q15" value="never" required class="mr-2">Never</label>
+                  <label class="inline-flex items-center"><input type="radio" name="q15" value="rarely" class="mr-2">Rarely</label>
+                  <label class="inline-flex items-center"><input type="radio" name="q15" value="sometimes" class="mr-2">Sometimes</label>
+                  <label class="inline-flex items-center"><input type="radio" name="q15" value="often" class="mr-2">Often</label>
+                  <label class="inline-flex items-center"><input type="radio" name="q15" value="always" class="mr-2">Always</label>
+                </div>
+              </div>
+
+              <div class="space-y-3">
+                <div class="text-sm font-medium">16. Does your child exhibit a high level of sensitivity to certain sensory experiences, such as loud noises or bright lights?</div>
+                <div class="flex flex-wrap gap-4">
+                  <label class="inline-flex items-center"><input type="radio" name="q16" value="never" required class="mr-2">Never</label>
+                  <label class="inline-flex items-center"><input type="radio" name="q16" value="rarely" class="mr-2">Rarely</label>
+                  <label class="inline-flex items-center"><input type="radio" name="q16" value="sometimes" class="mr-2">Sometimes</label>
+                  <label class="inline-flex items-center"><input type="radio" name="q16" value="often" class="mr-2">Often</label>
+                  <label class="inline-flex items-center"><input type="radio" name="q16" value="always" class="mr-2">Always</label>
+                </div>
+              </div>
+
+              <div class="space-y-3">
+                <div class="text-sm font-medium">17. Does your child often focus on small details of objects or situations, ignoring the overall context?</div>
+                <div class="flex flex-wrap gap-4">
+                  <label class="inline-flex items-center"><input type="radio" name="q17" value="never" required class="mr-2">Never</label>
+                  <label class="inline-flex items-center"><input type="radio" name="q17" value="rarely" class="mr-2">Rarely</label>
+                  <label class="inline-flex items-center"><input type="radio" name="q17" value="sometimes" class="mr-2">Sometimes</label>
+                  <label class="inline-flex items-center"><input type="radio" name="q17" value="often" class="mr-2">Often</label>
+                  <label class="inline-flex items-center"><input type="radio" name="q17" value="always" class="mr-2">Always</label>
+                </div>
+              </div>
+
+              <div class="space-y-3">
+                <div class="text-sm font-medium">18. Does your child show limited awareness of danger or lack of response to important environmental cues?</div>
+                <div class="flex flex-wrap gap-4">
+                  <label class="inline-flex items-center"><input type="radio" name="q18" value="never" required class="mr-2">Never</label>
+                  <label class="inline-flex items-center"><input type="radio" name="q18" value="rarely" class="mr-2">Rarely</label>
+                  <label class="inline-flex items-center"><input type="radio" name="q18" value="sometimes" class="mr-2">Sometimes</label>
+                  <label class="inline-flex items-center"><input type="radio" name="q18" value="often" class="mr-2">Often</label>
+                  <label class="inline-flex items-center"><input type="radio" name="q18" value="always" class="mr-2">Always</label>
+                </div>
+              </div>
+
+              <div class="space-y-3">
+                <div class="text-sm font-medium">19. Does your child have difficulty building and maintaining relationships with peers or adults?</div>
+                <div class="flex flex-wrap gap-4">
+                  <label class="inline-flex items-center"><input type="radio" name="q19" value="never" required class="mr-2">Never</label>
+                  <label class="inline-flex items-center"><input type="radio" name="q19" value="rarely" class="mr-2">Rarely</label>
+                  <label class="inline-flex items-center"><input type="radio" name="q19" value="sometimes" class="mr-2">Sometimes</label>
+                  <label class="inline-flex items-center"><input type="radio" name="q19" value="often" class="mr-2">Often</label>
+                  <label class="inline-flex items-center"><input type="radio" name="q19" value="always" class="mr-2">Always</label>
+                </div>
+              </div>
+
+              <div class="space-y-3">
+                <div class="text-sm font-medium">20. Does your child show intense focus or repetitive actions with specific objects, such as lining up toys or turning objects in circles?</div>
+                <div class="flex flex-wrap gap-4">
+                  <label class="inline-flex items-center"><input type="radio" name="q20" value="never" required class="mr-2">Never</label>
+                  <label class="inline-flex items-center"><input type="radio" name="q20" value="rarely" class="mr-2">Rarely</label>
+                  <label class="inline-flex items-center"><input type="radio" name="q20" value="sometimes" class="mr-2">Sometimes</label>
+                  <label class="inline-flex items-center"><input type="radio" name="q20" value="often" class="mr-2">Often</label>
+                  <label class="inline-flex items-center"><input type="radio" name="q20" value="always" class="mr-2">Always</label>
+                </div>
+              </div>
+            </div>
+
+            <button type="submit" class="w-full bg-primary text-white py-2 px-4 rounded-lg hover:bg-primary/90 transition flex items-center justify-center">
+              <i data-feather="check-circle" class="mr-2"></i> Submit Assessment
+            </button>
+          </form>
+          <div id="textResult" class="mt-4 hidden">
+            <div class="p-4 bg-primary/10 rounded-lg border border-primary/20">
+              <h3 class="font-medium text-primary">Assessment Result</h3>
+              <p id="textPrediction" class="mt-2"></p>
+              <div class="w-full bg-gray-200 rounded-full h-2.5 mt-2">
+                <div id="textConfidenceBar" class="bg-primary h-2.5 rounded-full"></div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- Eye Gaze Tracker Section -->
+      <section class="mt-8 col-span-full">
+        <h2 class="text-xl font-semibold text-gray-800 mb-4 flex items-center">
+          <i data-feather="eye" class="mr-2"></i> Eye Gaze Analysis
+        </h2>
+        <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
+          <p class="text-sm text-gray-500 mb-4">Use your webcam to track eye gaze for potential ASD indicators (preliminary only—consult a professional).</p>
+          <video id="webgazerVideo" width="400" height="300" autoplay playsinline muted class="mx-auto rounded-lg border border-gray-400"></video>
+          <div class="mt-6 space-x-4">
+            <button id="startGazeBtn" class="bg-primary text-white px-6 py-3 rounded-lg hover:bg-primary/90 transition">
+              Start Tracking
+            </button>
+            <button id="stopGazeBtn" class="bg-gray-500 text-white px-6 py-3 rounded-lg hover:bg-gray-600 transition" disabled>
+              Stop Tracking
+            </button>
+          </div>
+
+          <div id="gazeResult" class="mt-6 hidden p-5 bg-primary/10 rounded-lg border border-primary/20">
+            <h3 class="font-medium text-primary text-lg">Gaze Analysis Result</h3>
+            <p id="gazePrediction" class="mt-3 text-lg font-semibold"></p>
+            <p class="text-sm text-gray-600 mt-3">ASD Likelihood:</p>
+            <div class="w-full bg-gray-200 rounded-full h-3 mt-1">
+              <div id="gazeConfidenceBar" class="bg-secondary h-3 rounded-full transition-all duration-500" style="width: 0%;"></div>
+            </div>
+            <p id="gazeConfidenceText" class="text-sm text-gray-700 mt-2"></p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Assistive Chatbot Section -->
+      <section class="mt-8">
+        <h2 class="text-xl font-semibold text-gray-800 mb-4 flex items-center">
+          <i data-feather="message-circle" class="mr-2"></i> Assistive Chatbot
+        </h2>
+        <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
+          <p class="text-sm text-gray-500 mb-4">Chat with our AI assistant for ASD insights and guidance.<br>Click the chat bubble in the bottom-right corner to start.</p>
+        </div>
+      </section>
+
+      <!-- Combined Result -->
+      <div id="combinedResult" class="mt-8 hidden">
+        <div class="p-6 bg-gradient-to-r from-primary to-secondary rounded-lg text-white">
+          <h2 class="text-2xl font-bold mb-2">Comprehensive Prediction</h2>
+          <p id="finalPrediction" class="text-lg mb-4"></p>
+          <div class="w-full bg-white bg-opacity-30 rounded-full h-3">
+            <div id="finalConfidenceBar" class="bg-white h-3 rounded-full" style="width:0%;"></div>
+          </div>
+          <div class="mt-4 flex items-center text-sm">
+            <i data-feather="alert-circle" class="mr-2"></i>
+            <p>Note: This tool provides preliminary insights only. Consult a healthcare professional for clinical evaluation.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <custom-footer>
+   <footer class="bg-primary text-white py-8 mt-auto">
+    <div class="max-w-screen-xl mx-auto px-4 text-center">
+      <p class="text-lg font-semibold">ASD Prediction Tool © 2026</p>
+      <p class="mt-4 text-sm">This tool provides preliminary insights for Autism Spectrum Disorder screening.<br>It is not a substitute for professional medical evaluation.</p>
+      <div class="mt-6 flex justify-center space-x-6">
+        <a href="#" class="hover:text-secondary transition">About ASD</a>
+        <a href="#" class="hover:text-secondary transition">Privacy Policy</a>
+        <a href="#" class="hover:text-secondary transition">Contact Support</a>
+        <a href="#" class="hover:text-secondary transition">Resources</a>
+      </div>
+      <p class="mt-6 text-xs text-white/70">For educational and awareness purposes only.</p>
+    </div>
+  </footer>
+  </custom-footer>
+
+  <!-- External Scripts -->
+  <script src="components/navbar.js"></script>
+  <script src="components/footer.js"></script>
+  <script src="script.js"></script>
+
+  <!-- Dialogflow Messenger -->
+  <script src="https://www.gstatic.com/dialogflow-console/fast/messenger/bootstrap.js?v=1"></script>
+  <df-messenger
+    intent="WELCOME"
+    chat-title="ASDChatbot"
+    agent-id="f698b533-4f8d-470b-81c0-c56a5d661204"
+    language-code="en"
+  ></df-messenger>
+
+  <!-- WebGazer from CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/webgazer@3.4.0/dist/webgazer.js"></script>
+
+  <!-- Main App Logic (Image, Questionnaire, Gaze, Combined) -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      feather.replace();
+
+      // Elements
+      const uploadBtn = document.getElementById('uploadBtn');
+      const imageUpload = document.getElementById('imageUpload');
+      const imagePreviewDiv = document.getElementById('imagePreview');
+      const previewImg = document.getElementById('preview');
+      const imageResult = document.getElementById('imageResult');
+      const imagePrediction = document.getElementById('imagePrediction');
+      const imageConfidenceBar = document.getElementById('imageConfidenceBar');
+
+      const textResult = document.getElementById('textResult');
+      const textPrediction = document.getElementById('textPrediction');
+      const textConfidenceBar = document.getElementById('textConfidenceBar');
+
+      const gazeResult = document.getElementById('gazeResult');
+      const gazePrediction = document.getElementById('gazePrediction');
+      const gazeConfidenceBar = document.getElementById('gazeConfidenceBar');
+      const gazeConfidenceText = document.getElementById('gazeConfidenceText');
+
+      const combinedResult = document.getElementById('combinedResult');
+      const finalPrediction = document.getElementById('finalPrediction');
+      const finalConfidenceBar = document.getElementById('finalConfidenceBar');
+
+      const video = document.getElementById('webgazerVideo');
+      const startGazeBtn = document.getElementById('startGazeBtn');
+      const stopGazeBtn = document.getElementById('stopGazeBtn');
+
+      // Results storage
+      let lastImageResult = null;
+      let lastTextResult = null;
+      let lastGazeResult = null;
+      let stream = null;
+      let gazeData = [];
+
+      // Image Upload
+      uploadBtn.addEventListener('click', () => imageUpload.click());
+
+      imageUpload.addEventListener('change', async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        previewImg.src = URL.createObjectURL(file);
+        imagePreviewDiv.classList.remove('hidden');
+
+        const fd = new FormData();
+        fd.append('image', file);
+
+        imagePrediction.textContent = 'Analyzing image...';
+        imageResult.classList.remove('hidden');
+        try {
+          const res = await fetch('/api/predict-image', { method: 'POST', body: fd });
+          if (!res.ok) throw new Error(await res.text());
+          const data = await res.json();
+          const conf = Math.max(0, Math.min(1, Number(data.confidence) || 0));
+          imagePrediction.textContent = `${data.prediction} (${(conf*100).toFixed(1)}%)`;
+          imageConfidenceBar.style.width = `${conf*100}%`;
+          lastImageResult = { prediction: data.prediction, confidence: conf };
+          combineAllResults();
+        } catch (err) {
+          imagePrediction.textContent = 'Image analysis failed.';
+          console.error(err);
+        }
+      });
+
+      // Questionnaire
+      const form = document.getElementById('questionnaire');
+      form.addEventListener('submit', async (ev) => {
+        ev.preventDefault();
+        const formData = new FormData(form);
+        const answers = {};
+        for (const [key, value] of formData.entries()) answers[key] = value;
+
+        textPrediction.textContent = 'Analyzing answers...';
+        textResult.classList.remove('hidden');
+        try {
+          const res = await fetch('/api/predict-questionnaire', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ answers })
+          });
+          if (!res.ok) throw new Error(await res.text());
+          const data = await res.json();
+          const conf = Math.max(0, Math.min(1, Number(data.confidence) || 0));
+          textPrediction.textContent = `${data.prediction} (${(conf*100).toFixed(1)}%)`;
+          textConfidenceBar.style.width = `${conf*100}%`;
+          lastTextResult = { prediction: data.prediction, confidence: conf };
+          combineAllResults();
+        } catch (err) {
+          textPrediction.textContent = 'Questionnaire analysis failed.';
+          console.error(err);
+        }
+      });
+
+      // Eye Gaze Tracker
+      startGazeBtn.addEventListener('click', async () => {
+        try {
+          stream = await navigator.mediaDevices.getUserMedia({ video: true });
+          video.srcObject = stream;
+
+          webgazer
+            .setGazeListener((data, timestamp) => {
+              if (data) {
+                gazeData.push({ x: data.x, y: data.y });
+              }
+            })
+            .begin();
+
+          startGazeBtn.disabled = true;
+          stopGazeBtn.disabled = false;
+          gazeResult.classList.add('hidden');
+          gazeData = [];
+
+        } catch (err) {
+          alert('Webcam access denied — please allow and reload.');
+        }
+      });
+
+      stopGazeBtn.addEventListener('click', () => {
+        if (typeof webgazer !== 'undefined') {
+          webgazer.end();
+          webgazer.pause();
+          webgazer.clearGazeListener();
+        }
+
+        if (stream) {
+          stream.getTracks().forEach(track => {
+            track.stop();
+            track.enabled = false;
+          });
+          video.srcObject = null;
+          video.pause();
+          video.src = '';
+        }
+
+        analyzeGaze();
+
+        startGazeBtn.disabled = false;
+        stopGazeBtn.disabled = true;
+      });
+
+      function analyzeGaze() {
+        const totalPoints = gazeData.length;
+
+        if (totalPoints < 20) {
+          gazePrediction.textContent = 'Not enough data — track for 15–30 seconds.';
+          document.getElementById('gazeConfidenceBar').style.width = '0%';
+          document.getElementById('gazeConfidenceText').textContent = '';
+          lastGazeResult = null;
+        } else {
+          const xValues = gazeData.map(p => p.x);
+          const yValues = gazeData.map(p => p.y);
+          const xVariance = variance(xValues);
+          const yVariance = variance(yValues);
+          const avgVariance = (xVariance + yVariance) / 2;
+
+          // Lowered maxVariance for better sensitivity to fixation
+          const maxVariance = 15000;  // Was 500 — too low, now realistic for webcam jitter
+          let asdLikelihood = Math.round(Math.max(0, Math.min(100, 100 - (avgVariance / maxVariance) * 100)));
+
+          // Force higher % if very low movement
+          if (avgVariance < 5000) asdLikelihood = Math.max(asdLikelihood, 70);
+
+          if (asdLikelihood > 60) {
+            gazePrediction.textContent = 'Potential ASD Indicator Detected';
+            gazePrediction.style.color = '#dc2626';
+          } else {
+            gazePrediction.textContent = 'Normal Gaze Pattern Detected';
+            gazePrediction.style.color = '#16a34a';
+          }
+
+          const bar = document.getElementById('gazeConfidenceBar');
+          bar.style.width = `${asdLikelihood}%`;
+          bar.style.backgroundColor = asdLikelihood > 60 ? '#dc2626' : '#16a34a';
+
+          document.getElementById('gazeConfidenceText').textContent = 
+      `   ASD Likelihood: ${asdLikelihood}% | Non-ASD: ${100 - asdLikelihood}% (${totalPoints} points, variance: ${Math.round(avgVariance)})`;
+
+          lastGazeResult = {
+          prediction: asdLikelihood > 60 ? 'ASD' : 'Non-ASD',
+          confidence: asdLikelihood / 100
+          };
+       }
+
+       gazeResult.classList.remove('hidden');
+       combineAllResults();
+      }
+
+      function variance(arr) {
+        const mean = arr.reduce((a, b) => a + b, 0) / arr.length;
+        return arr.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / arr.length;
+      }
+
+      // Combined Result from all 3
+      function combineAllResults() {
+        const results = [];
+        if (lastImageResult) results.push(lastImageResult);
+        if (lastTextResult) results.push(lastTextResult);
+        if (lastGazeResult) results.push(lastGazeResult);
+
+        if (results.length === 0) return;
+
+        const totalConfidence = results.reduce((sum, r) => sum + r.confidence, 0);
+        const avgConfidence = totalConfidence / results.length;
+
+        const asdCount = results.filter(r => r.prediction === 'ASD').length;
+        const finalLabel = asdCount > results.length / 2 ? 'ASD' : 'Non-ASD';
+        const finalPercentage = Math.round(avgConfidence * 100);
+
+        combinedResult.classList.remove('hidden');
+        finalPrediction.textContent = `${finalLabel} (${finalPercentage}%)`;
+
+        finalConfidenceBar.style.width = `${finalPercentage}%`;
+        finalConfidenceBar.style.backgroundColor = finalLabel === 'ASD' ? '#dc2626' : '#16a34a';
+
+        const sources = [];
+        if (lastImageResult) sources.push('Facial');
+        if (lastTextResult) sources.push('Questionnaire');
+        if (lastGazeResult) sources.push('Gaze');
+        finalPrediction.textContent += ` — from ${sources.join(', ')}`;
+      }
+    });
+  </script>
+
+</body>
+</html>
