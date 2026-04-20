@@ -102,4 +102,4 @@ if __name__ == '__main__':
     print("\nTHIS CODE CANNOT BE WRONG — IT AUTO PICKS THE HIGHER CLASS AS ASD")
     print("OPEN THIS LINK IN YOUR BROWSER → http://127.0.0.1:5000")
     print("RUN AND UPLOAD ONE AUTISTIC CHILD PHOTO")
-    app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)))
+    app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 7860)))
