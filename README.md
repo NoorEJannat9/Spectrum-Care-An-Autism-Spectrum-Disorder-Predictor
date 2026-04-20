@@ -2,6 +2,9 @@
 
 PredictorSpectrum Care is a multi-modal, deep-learning-based screening system designed for the early detection of Autism Spectrum Disorder (ASD). It integrates facial structure analysis, real-time eye gaze tracking, and behavioral questionnaires into a unified web-based platform to provide a scalable and accessible diagnostic tool.
 
+**Project Link**
+https://huggingface.co/spaces/NoorEJannat/spectrum-care
+
 **Project Overview**
 
 Early diagnosis of ASD is critical for effective intervention, yet traditional clinical methods are often time-consuming and expensive. Spectrum Care addresses these challenges by offering a real-time, low-cost screening tool that can be used by caregivers and healthcare professionals across various devices.
